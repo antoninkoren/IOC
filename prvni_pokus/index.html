@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>IOC Orientační běh</title>
+</head>
+<body>
+  <h2>Přihlášení</h2>
+
+  <input id="username" placeholder="Jméno">
+  <input id="password" type="password" placeholder="Heslo (jen učitel)">
+  <button onclick="login()">Přihlásit</button>
+
+  <script>
+    function login() {
+      const u = username.value.trim();
+      const p = password.value;
+
+      if (u === "ucitel" && p === "orientak123") {
+        localStorage.setItem("role", "teacher");
+        location.href = "teacher.html";
+      } else if (u !== "") {
+        localStorage.setItem("role", "student");
+        localStorage.setItem("name", u);
+        location.href = "student.html";
+      } else {
+        alert("Zadej jméno");
+      }
+    }
+  </script>
+</body>
+</html>
