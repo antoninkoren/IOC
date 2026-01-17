@@ -1,42 +1,29 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8">
-  <title>Žák</title>
-</head>
-<body>
+<link rel="stylesheet" href="style.css">
+<div class="card">
   <h2 id="name"></h2>
   <p>Čas: <span id="time">0</span> s</p>
+</div>
 
-  <script>
-    if (localStorage.getItem("role") !== "student") {
-      location.href = "index.html";
-    }
+<script src="firebase.js"></script>
+<script>
+  if (localStorage.getItem("role") !== "student") location.href="index.html";
 
-    const studentName = localStorage.getItem("name");
-    document.getElementById("name").innerText = studentName;
+  const name = localStorage.getItem("name");
+  document.getElementById("name").innerText = name;
 
-    let time = 0;
-    let qrLeft = 10;
+  let time = 0;
 
-    setInterval(() => {
-      time++;
-      document.getElementById("time").innerText = time;
+  setInterval(() => {
+    time++;
+    timeEl.innerText = time;
 
-      navigator.geolocation.getCurrentPosition(pos => {
-        let students = JSON.parse(localStorage.getItem("students") || "{}");
-
-        students[studentName] = {
-          time,
-          qrLeft,
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-          updated: Date.now()
-        };
-
-        localStorage.setItem("students", JSON.stringify(students));
+    navigator.geolocation.getCurrentPosition(pos => {
+      db.ref("students/" + name).set({
+        time,
+        lat: pos.coords.latitude,
+        lon: pos.coords.longitude,
+        updated: Date.now()
       });
-    }, 3000);
-  </script>
-</body>
-</html>
+    });
+  }, 3000);
+</script>
