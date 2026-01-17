@@ -1,38 +1,25 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard učitele</title>
-</head>
-<body>
+<link rel="stylesheet" href="style.css">
+<div class="card">
   <h2>Dashboard učitele</h2>
   <div id="list"></div>
+</div>
 
-  <script>
-    if (localStorage.getItem("role") !== "teacher") {
-      location.href = "index.html";
-    }
+<script src="firebase.js"></script>
+<script>
+  if (localStorage.getItem("role") !== "teacher") location.href="index.html";
 
-    function render() {
-      const data = JSON.parse(localStorage.getItem("students") || "{}");
-      let html = "";
+  db.ref("students").on("value", snap => {
+    const data = snap.val() || {};
+    list.innerHTML = "";
 
-      for (let name in data) {
-        const s = data[name];
-        html += `
-          <div style="border:1px solid black;margin:5px;padding:5px">
-            <b>${name}</b><br>
-            Čas: ${s.time}s<br>
-            QR zbývá: ${s.qrLeft}<br>
-            Poloha: ${s.lat.toFixed(5)}, ${s.lon.toFixed(5)}
-          </div>
-        `;
-      }
-
-      document.getElementById("list").innerHTML = html;
-    }
-
-    setInterval(render, 2000);
-  </script>
-</body>
-</html>
+    Object.keys(data).forEach(name => {
+      const s = data[name];
+      list.innerHTML += `
+        <div class="student-card">
+          <b>${name}</b><br>
+          Čas: ${s.time}s<br>
+          ${s.lat.toFixed(5)}, ${s.lon.toFixed(5)}
+        </div>`;
+    });
+  });
+</script>
