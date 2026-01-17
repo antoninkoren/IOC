@@ -1,21 +1,66 @@
-body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; }
-header { display:flex; align-items:center; background:#2b7bd3; color:#fff; padding:12px; }
-header h1 { flex:1; margin:0; font-size:1.2em; }
-#menuToggle { font-size:1.5em; background:none; border:none; color:#fff; cursor:pointer; }
-nav { position:fixed; top:0; left:0; height:100%; width:250px; background:#fff; box-shadow:2px 0 5px rgba(0,0,0,0.3); transform:translateX(-100%); transition:0.3s; z-index:100; padding-top:50px; }
-nav.open { transform:translateX(0); }
-nav ul { list-style:none; padding:0; margin:0; }
-nav ul li { padding:15px 20px; border-bottom:1px solid #eee; cursor:pointer; }
-nav ul li:hover { background:#f0f0f0; }
-main { padding:15px; margin-top:50px; }
-.view { display:none; }
-.view.active { display:block; }
-video { width:100%; border-radius:8px; margin-top:10px; }
-#scanOutput { background:#222; color:#0f0; padding:10px; margin-top:10px; border-radius:6px; min-height:40px; word-wrap:break-word; }
-button { padding:10px 15px; margin-top:10px; border:none; border-radius:6px; background:#2b7bd3; color:#fff; font-size:1em; cursor:pointer; }
-button:hover { background:#1e5fae; }
-ul#historyList, ul#teacherList { list-style:none; padding:0; }
-ul#historyList li, ul#teacherList li { padding:10px; background:#fff; margin-bottom:6px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
-input[type=text], input[type=password] { padding:10px; margin-top:10px; width:calc(100% - 24px); border-radius:6px; border:1px solid #ccc; }
-#locationOutput { background:#eee; padding:10px; margin-top:10px; border-radius:6px; }
-#loginOutput { margin-top:10px; color:red; }
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #eee;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.03) 0,
+    rgba(0,0,0,0.03) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body::before {
+  content: "🏃‍♂️";
+  font-size: 180px;
+  opacity: 0.08;
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  width: 100%;
+  max-width: 420px;
+}
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+button {
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #222;
+}
+
+.student-card {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
