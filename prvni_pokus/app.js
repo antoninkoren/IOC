@@ -157,8 +157,8 @@ async function updateLocation(){
     });
 }
 
-// Aktualizace polohy každých 10 sekund (JSONBin má rate limit)
-setInterval(updateLocation, 10000);
+// Aktualizace polohy každých 60 sekund (JSONBin má rate limit)
+setInterval(updateLocation, 60000);
 
 // --- Teacher Dashboard ---
 async function loadTeacherDashboard() {
