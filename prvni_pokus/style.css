@@ -19,3 +19,29 @@ ul#historyList li, ul#teacherList li { padding:10px; background:#fff; margin-bot
 input[type=text], input[type=password] { padding:10px; margin-top:10px; width:calc(100% - 24px); border-radius:6px; border:1px solid #ccc; }
 #locationOutput { background:#eee; padding:10px; margin-top:10px; border-radius:6px; }
 #loginOutput { margin-top:10px; color:red; }
+
+/* Toast notifications */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.95em;
+    z-index: 9999;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.toast.toast-show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+.toast-success  { background: #27ae60; }
+.toast-error    { background: #e74c3c; }
+.toast-warning  { background: #f39c12; }
+.toast-info     { background: #2980b9; }
