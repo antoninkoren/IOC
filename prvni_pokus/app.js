@@ -1,6 +1,6 @@
 // --- JSONBin.io Config ---
-const JSONBIN_API_KEY = '$2a$10$YOUR_KEY_HERE';
-const JSONBIN_BIN_ID  = 'YOUR_BIN_ID_HERE';
+const JSONBIN_API_KEY = '$2a$10$rpU7scUXWCXKkafuGsrL8uTPptjdR3k8WjJ1f/Hnj6YOa7VyvWEDm';
+const JSONBIN_BIN_ID  = 'Y698ee44943b1c97be97b8895';
 const JSONBIN_URL     = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
 // --- Offline Queue ---
