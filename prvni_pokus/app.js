@@ -1,3 +1,27 @@
+// --- JSONBin.io Config ---
+const JSONBIN_API_KEY = '$2a$10$dM5iO9SaL9gPAbeqbZE2veGdxhglzGXyCb5KzLQZbznibrz1VFSKu';
+const JSONBIN_BIN_ID  = '$2a$10$rpU7scUXWCXKkafuGsrL8uTPptjdR3k8WjJ1f/Hnj6YOa7VyvWEDm';
+const JSONBIN_URL     = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+async function readDB() {
+  const res = await fetch(JSONBIN_URL + '/latest', {
+    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+  });
+  const json = await res.json();
+  return json.record; // { users: {}, scans: [] }
+}
+
+async function writeDB(data) {
+  await fetch(JSONBIN_URL, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': JSONBIN_API_KEY
+    },
+    body: JSON.stringify(data)
+  });
+}
+
 // --- Sidebar & Navigation ---
 const menuToggle = document.getElementById('menuToggle');
 const sidebar = document.getElementById('sidebar');
@@ -27,9 +51,7 @@ loginForm.addEventListener('submit', e=>{
     const password = document.getElementById('password').value.trim();
     if(username && password){
         currentUser = username;
-        localStorage.setItem('currentUser', currentUser);
         loginOutput.textContent = "Přihlášeno jako: " + currentUser;
-        // Po přihlášení přepnout na home
         views.forEach(v=>v.classList.remove('active'));
         document.getElementById('home').classList.add('active');
     } else {
@@ -43,7 +65,6 @@ let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let scanOutput = document.getElementById('scanOutput');
 let scanning = false;
-let scanData = JSON.parse(localStorage.getItem('scanHistory') || '[]');
 
 document.getElementById('startScan').addEventListener('click', ()=>{
     if(scanning) return;
@@ -73,60 +94,94 @@ function scanFrame(){
         if(code){
             const timestamp = new Date().toLocaleTimeString();
             scanOutput.textContent = `Naskenováno: ${code.data}`;
-            scanData.push({user:currentUser,data:code.data,time:timestamp});
-            saveScanData();
+            saveScanData({ user: currentUser, data: code.data, time: timestamp });
             scanning = false;
-            setTimeout(()=> scanning = true, 2000); // pauza 2s
+            setTimeout(()=> scanning = true, 2000);
         }
     }
     requestAnimationFrame(scanFrame);
 }
 
-// --- Historie ---
-function saveScanData(){
-    localStorage.setItem('scanHistory', JSON.stringify(scanData));
+// --- Scan Data ---
+async function saveScanData(scanEntry) {
+    try {
+        const db = await readDB();
+        db.scans.push(scanEntry);
+        await writeDB(db);
+    } catch(err) {
+        console.error('Chyba při ukládání skenu:', err);
+    }
 }
 
-function loadHistory(){
+async function loadHistory() {
     const list = document.getElementById('historyList');
-    list.innerHTML='';
-    const data = JSON.parse(localStorage.getItem('scanHistory')||'[]')
-        .filter(d => d.user === currentUser);
-    data.forEach(item=>{
-        const li = document.createElement('li');
-        li.textContent=`${item.time} – ${item.data}`;
-        list.appendChild(li);
-    });
+    list.innerHTML = '<li>Načítám...</li>';
+    try {
+        const db = await readDB();
+        list.innerHTML = '';
+        const userScans = db.scans.filter(d => d.user === currentUser);
+        if(userScans.length === 0){
+            list.innerHTML = '<li>Žádné skeny zatím.</li>';
+            return;
+        }
+        userScans.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${item.time} – ${item.data}`;
+            list.appendChild(li);
+        });
+    } catch(err) {
+        list.innerHTML = '<li>Chyba při načítání.</li>';
+    }
 }
 
 // --- Geolokace ---
 let locationOutput = document.getElementById('locationOutput');
+let locationTimeout = null;
 
-function updateLocation(){
-    if(currentUser && navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(pos=>{
-            const coords = {lat: pos.coords.latitude, lon: pos.coords.longitude, time: new Date().toLocaleTimeString()};
-            localStorage.setItem('userLocation_'+currentUser, JSON.stringify(coords));
-            locationOutput.textContent = `Šířka: ${coords.lat}, Délka: ${coords.lon} (času: ${coords.time})`;
-        });
-    }
+async function updateLocation(){
+    if(!currentUser || !navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(async pos=>{
+        const coords = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            time: new Date().toLocaleTimeString()
+        };
+        locationOutput.textContent = `Šířka: ${coords.lat}, Délka: ${coords.lon} (čas: ${coords.time})`;
+        try {
+            const db = await readDB();
+            db.users[currentUser] = coords;
+            await writeDB(db);
+        } catch(err) {
+            console.error('Chyba při ukládání polohy:', err);
+        }
+    });
 }
-setInterval(updateLocation, 3000); // každé 3 sekundy
+
+// Aktualizace polohy každých 10 sekund (JSONBin má rate limit)
+setInterval(updateLocation, 10000);
 
 // --- Teacher Dashboard ---
-function loadTeacherDashboard(){
+async function loadTeacherDashboard() {
     const list = document.getElementById('teacherList');
-    list.innerHTML='';
-    // Simulace: pro všechny uživatele, kteří mají uloženou polohu
-    for(let key in localStorage){
-        if(key.startsWith('userLocation_')){
-            const user = key.replace('userLocation_','');
-            const coords = JSON.parse(localStorage.getItem(key));
-            const scans = JSON.parse(localStorage.getItem('scanHistory')||'[]')
-                .filter(d => d.user === user);
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${user}</strong><br>Poloha: ${coords.lat}, ${coords.lon} <br>Čas: ${coords.time} <br>QR naskenováno: ${scans.length}`;
-            list.appendChild(li);
+    list.innerHTML = '<li>Načítám...</li>';
+    try {
+        const db = await readDB();
+        list.innerHTML = '';
+        const entries = Object.entries(db.users);
+        if(entries.length === 0){
+            list.innerHTML = '<li>Žádní uživatelé zatím.</li>';
+            return;
         }
+        entries.forEach(([user, coords]) => {
+            const scans = db.scans.filter(d => d.user === user);
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${user}</strong><br>
+                Poloha: ${coords.lat}, ${coords.lon}<br>
+                Čas: ${coords.time}<br>
+                QR naskenováno: ${scans.length}`;
+            list.appendChild(li);
+        });
+    } catch(err) {
+        list.innerHTML = '<li>Chyba při načítání dashboardu.</li>';
     }
 }
