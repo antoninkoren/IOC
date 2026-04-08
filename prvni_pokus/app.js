@@ -98,19 +98,29 @@ let currentUser=null;
 const loginForm=document.getElementById('loginForm');
 const teacherNav=document.getElementById('teacherNav');
 
-loginForm.addEventListener('submit',e=>{
+loginForm.addEventListener('submit', e => {
     e.preventDefault();
-    const username=document.getElementById('username').value.trim();
-    const password=document.getElementById('password').value.trim();
-    if(!username||!password){ showToast('Vyplň jméno a heslo!','error'); return; }
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-    currentUser = (username==='teacher' && password==='admin123') ? 'teacher' : username;
-    showToast(`Přihlášeno jako ${currentUser}`,'success');
+    if (!username || !password) { 
+        showToast('Vyplň jméno a heslo!', 'error'); 
+        return; 
+    }
+
+    if (username === 'teacher' && password === 'admin123') {
+        currentUser = 'teacher';
+    } else {
+        // každý jiný uživatel může mít libovolné heslo
+        currentUser = username;
+    }
+
+    showToast(`Přihlášeno jako ${currentUser}`, 'success');
     updateUIForRole();
     flushOfflineQueue();
 
-    // --- NOVÉ: po přihlášení přepnout na domovskou stránku ---
-    views.forEach(v=>v.classList.remove('active'));
+    // --- po přihlášení přepnout na domovskou stránku ---
+    views.forEach(v => v.classList.remove('active'));
     document.getElementById('home').classList.add('active');
 });
 
