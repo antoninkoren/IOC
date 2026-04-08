@@ -1,0 +1,78 @@
+# Python bytecode a cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtuální prostředí
+.venv/
+venv/
+env/
+.env
+.envrc
+.pdm-python
+.pixi/
+__pypackages__/
+
+# Lokální databáze a nastavení
+db.sqlite3
+db.sqlite3-journal
+local_settings.py
+
+# Buildy a distribuce
+build/
+dist/
+*.egg
+*.egg-info/
+wheels/
+*.manifest
+*.spec
+
+# Testování a coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Frameworky a projekty
+instance/          # Flask
+.scrapy/           # Scrapy
+celerybeat-schedule
+celerybeat.pid
+docs/_build/       # Sphinx
+.pybuilder/
+target/
+
+# Jupyter a IPython
+.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# Typové kontroly
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# IDE a editory
+.idea/
+.spyderproject
+.spyproject
+.ropeproject/
+.vscode/
+
+# AI a specializované nástroje
+.abstra/
+.cursorignore
+.cursorindexingignore
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+# Cython debug
+cython_debug/
