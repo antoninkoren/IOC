@@ -14,7 +14,7 @@ header {
     padding: 10px 20px;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 101; /* nad sidebar a obsahem */
 }
 
 #menuToggle {
@@ -33,7 +33,7 @@ h1 {
 /* --- SIDEBAR --- */
 #sidebar {
     position: fixed;
-    left: -220px;
+    left: -220px; /* skrytý vlevo */
     top: 0;
     width: 220px;
     height: 100%;
@@ -42,6 +42,7 @@ h1 {
     transition: left 0.3s;
     padding-top: 60px;
     overflow-y: auto;
+    z-index: 100; /* nad obsahem, pod header */
 }
 
 #sidebar.open {
@@ -51,6 +52,7 @@ h1 {
 #sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 #sidebar li {
@@ -69,6 +71,8 @@ h1 {
     padding: 20px;
     margin-left: 0;
     transition: margin-left 0.3s;
+    position: relative;
+    z-index: 1; /* pod sidebar */
 }
 
 .view.active {
@@ -145,6 +149,7 @@ input[type="text"], input[type="password"], input[type="number"] {
     border: 1px solid #ccc;
 }
 
+/* --- QR OUTPUT --- */
 #qrOutput {
     display: block;
     margin-top: 10px;
@@ -154,11 +159,7 @@ input[type="text"], input[type="password"], input[type="number"] {
 /* --- RESPONSIVE --- */
 @media (min-width: 600px) {
     .view {
-        margin-left: 240px;
-    }
-
-    #sidebar {
-        left: 0;
+        margin-left: 240px; /* posun obsahu při sidebaru */
     }
 
     #sidebar.closed {
