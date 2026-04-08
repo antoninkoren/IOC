@@ -108,6 +108,10 @@ loginForm.addEventListener('submit',e=>{
     showToast(`Přihlášeno jako ${currentUser}`,'success');
     updateUIForRole();
     flushOfflineQueue();
+
+    // --- NOVÉ: po přihlášení přepnout na domovskou stránku ---
+    views.forEach(v=>v.classList.remove('active'));
+    document.getElementById('home').classList.add('active');
 });
 
 function updateUIForRole(){

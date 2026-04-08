@@ -68,6 +68,41 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+<script>
+  // Login a přesměrování na home
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault(); // zabrání defaultnímu odeslání formuláře
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    // Zde můžeš nahradit vlastní autentizaci (např. Supabase)
+    if(username === "ucitel" && password === "heslo123") {
+      alert("Přihlášení proběhlo úspěšně!");
+      
+      // Zobrazit Home sekci a skrýt Login
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.getElementById("home").classList.add("active");
+    } else {
+      alert("Špatné uživatelské jméno nebo heslo.");
+    }
+  });
+
+  // Menu toggle + navigace
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("closed");
+  });
+
+  document.querySelectorAll("#sidebar li").forEach(item => {
+    item.addEventListener("click", () => {
+      const view = item.getAttribute("data-view");
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.getElementById(view).classList.add("active");
+    });
+  });
+</script>
 <script src="app.js"></script>
 </body>
 </html>
